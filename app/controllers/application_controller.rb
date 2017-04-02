@@ -54,6 +54,10 @@ class ApplicationController < Sinatra::Base
     halt 404, { errors: { message: 'Not found.' }}.to_json
   end
 
+  error JSON::ParserError do
+    halt 400, { errors: { message: 'Invalid json request body.' } }.to_json
+  end
+
   before do
     content_type :json
     response.headers["Access-Control-Allow-Origin"] = 
