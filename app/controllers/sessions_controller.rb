@@ -16,8 +16,14 @@ class SessionsController < ApplicationController
 
   delete '/logout' do
     user = Tendrl::User.authenticate_access_token(access_token)
-    user.delete_token
-    {}.to_json
+
+    if user.present?
+      user.delete_token
+      {}.to_json
+    else
+      status 401
+      { errors: { message: 'Invalid token.' } }.to_json
+    end
   end
 
 end
