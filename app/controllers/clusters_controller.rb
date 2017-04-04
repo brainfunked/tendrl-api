@@ -2,8 +2,12 @@ class ClustersController < AuthenticatedUsersController
 
   get '/GetClusterList' do
     clusters = []
-    etcd.get('/clusters', recursive: true).children.each do |cluster|
-      clusters << recurse(cluster)
+    begin
+      etcd.get('/clusters', recursive: true).children.each do |cluster|
+        clusters << recurse(cluster)
+      end
+    rescue Etcd::KeyNotFound, Etcd::NotDir
+      # This should get logged
     end
     clusters = ClusterPresenter.list(clusters)
     #clusters = load_stats(clusters)
